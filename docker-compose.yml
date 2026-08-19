@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+  dashboard:
+    image: node:20-alpine
+    working_dir: /app
+    volumes: ["./frontend:/app"]
+    environment: ["NEXT_PUBLIC_API_URL=http://localhost:8000"]
+    command: sh -c "npm install && npm run dev"
+    ports: ["3000:3000"]
+    depends_on: [api]
