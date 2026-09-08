@@ -10,16 +10,29 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install -r backend/requirements.txt
-      - run: OPSMIND_EMBEDDING_PROVIDER=offline python -m pytest -q
-      - uses: actions/setup-node@v4
+      - name: Install backend dependencies
+        run: python -m pip install -r backend/requirements.txt
+      - name: Run backend tests
+        run: OPSMIND_EMBEDDING_PROVIDER=offline python -m pytest -q
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: corepack enable && pnpm --version && pnpm install --frozen-lockfile
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Install dashboard dependencies
+        run: pnpm install --frozen-lockfile
         working-directory: frontend
-      - run: pnpm build
+      - name: Build dashboard
+        run: pnpm build
         working-directory: frontend
