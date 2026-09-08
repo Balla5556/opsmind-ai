@@ -22,3 +22,15 @@ def test_api_end_to_end():
     assert len(telemetry["data"]) == 5
     incidents = client.get("/incidents").json()["data"]
     assert incidents and client.get(f"/incidents/{incidents[0]['incident_id']}").status_code == 200
+
+
+def test_investigation_api_is_idempotent_and_recommendation_only():
+    client = TestClient(app)
+    incident = client.get("/incidents?scenario=db_pool_exhaustion").json()["data"][-1]
+    first = client.post(f"/api/v1/incidents/{incident['incident_id']}/investigate")
+    second = client.post(f"/api/v1/incidents/{incident['incident_id']}/investigate")
+
+    assert first.status_code == 200
+    assert first.json()["root_cause"]["prediction"] == "database_connection_pool_exhaustion"
+    assert second.json()["created_at"] == first.json()["created_at"]
+    assert all(action["requires_human_approval"] for action in first.json()["recommended_actions"])

@@ -79,7 +79,7 @@ The simulation is deterministic (`seed=42`) so demos and tests are reproducible.
 
 ## Roadmap
 
-**Phase 2 — Knowledge and investigation:** RAG over runbooks, incident postmortems, and service documentation; tool-using investigation agents; evidence-grounded remediation recommendations and evaluations.
+**Phase 2 — Knowledge and investigation:** Runbook RAG, evidence-grounded LangGraph RCA, structured LLM hypotheses with deterministic fallback, approval-gated remediation, persistent reports/traces, APIs, dashboard reporting, evaluation, and CI are implemented. See `docs/phase2.md` for setup and measured synthetic-baseline results.
 
 **Phase 3 — ML platform:** MLflow experiment/model tracking, time-series forecasting, drift/data-quality checks, calibration, feedback labels, and model monitoring.
 
